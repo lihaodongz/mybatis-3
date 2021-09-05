@@ -96,7 +96,9 @@ public class XMLConfigBuilder extends BaseBuilder {
       throw new BuilderException("Each XMLConfigBuilder can only be used once.");
     }
     parsed = true;
+    // 解析 xml文件中的<configuration></configuration> 标签对象
     parseConfiguration(parser.evalNode("/configuration"));
+    // configuration 对象是程序的上下文。包含全部的配置[
     return configuration;
   }
 

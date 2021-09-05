@@ -77,6 +77,14 @@ public class MapperProxy<T> implements InvocationHandler, Serializable {
     lookupConstructor = lookup;
   }
 
+  /**
+   * 当实现invocation之后创建了代理对象的代理类,之后调代理对象的方法便会走到这个逻辑里面
+   * @param proxy
+   * @param method
+   * @param args
+   * @return
+   * @throws Throwable
+   */
   @Override
   public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
     try {

@@ -115,15 +115,21 @@ public class MapperAnnotationBuilder {
   public void parse() {
     String resource = type.toString();
     if (!configuration.isResourceLoaded(resource)) {
+      // 加载xml文件
       loadXmlResource();
+      // 标记该类已经加载了
       configuration.addLoadedResource(resource);
+     // 设置namespace属性
       assistant.setCurrentNamespace(type.getName());
+      // CacheNamespace 注解的设置
       parseCache();
+      // CacheNamespaceRef 注解的设置
       parseCacheRef();
       for (Method method : type.getMethods()) {
         if (!canHaveStatement(method)) {
           continue;
         }
+        // 这里解析的是一个Mapper中定义的方法
         if (getAnnotationWrapper(method, false, Select.class, SelectProvider.class).isPresent()
             && method.getAnnotation(ResultMap.class) == null) {
           parseResultMap(method);
@@ -165,6 +171,7 @@ public class MapperAnnotationBuilder {
     if (!configuration.isResourceLoaded("namespace:" + type.getName())) {
       String xmlResource = type.getName().replace('.', '/') + ".xml";
       // #1347
+      // 将本地的加载文件加载进来.
       InputStream inputStream = type.getResourceAsStream("/" + xmlResource);
       if (inputStream == null) {
         // Search XML mapper that is not in the module but in the classpath.
@@ -175,6 +182,7 @@ public class MapperAnnotationBuilder {
         }
       }
       if (inputStream != null) {
+        // 利用xmlMapperBuilder加载Mapper文件然后
         XMLMapperBuilder xmlParser = new XMLMapperBuilder(inputStream, assistant.getConfiguration(), xmlResource, configuration.getSqlFragments(), type.getName());
         xmlParser.parse();
       }
@@ -293,11 +301,15 @@ public class MapperAnnotationBuilder {
     return null;
   }
 
+  // 解析Mapper方法的注解
   void parseStatement(Method method) {
+    // 获取参数的类型
     final Class<?> parameterTypeClass = getParameterType(method);
+    // 解析lang注解
     final LanguageDriver languageDriver = getLanguageDriver(method);
 
     getAnnotationWrapper(method, true, statementAnnotationTypes).ifPresent(statementAnnotation -> {
+
       final SqlSource sqlSource = buildSqlSource(statementAnnotation.getAnnotation(), parameterTypeClass, languageDriver, method);
       final SqlCommandType sqlCommandType = statementAnnotation.getSqlCommandType();
       final Options options = getAnnotationWrapper(method, false, Options.class).map(x -> (Options)x.getAnnotation()).orElse(null);
@@ -306,6 +318,7 @@ public class MapperAnnotationBuilder {
       final KeyGenerator keyGenerator;
       String keyProperty = null;
       String keyColumn = null;
+      // 处理insert || update 的 keyGenerator
       if (SqlCommandType.INSERT.equals(sqlCommandType) || SqlCommandType.UPDATE.equals(sqlCommandType)) {
         // first check for SelectKey annotation - that overrides everything else
         SelectKey selectKey = getAnnotationWrapper(method, false, SelectKey.class).map(x -> (SelectKey)x.getAnnotation()).orElse(null);

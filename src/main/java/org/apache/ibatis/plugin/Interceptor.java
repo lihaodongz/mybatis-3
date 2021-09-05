@@ -24,6 +24,11 @@ public interface Interceptor {
 
   Object intercept(Invocation invocation) throws Throwable;
 
+  /**
+   * 为该类创建代理对象
+   * @param target ParameterHandler
+   * @return
+   */
   default Object plugin(Object target) {
     return Plugin.wrap(target, this);
   }

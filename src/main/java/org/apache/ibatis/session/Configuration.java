@@ -841,6 +841,13 @@ public class Configuration {
     mapperRegistry.addMapper(type);
   }
 
+  /**
+   * 获取某一个Mapper的代理对象
+   * @param type
+   * @param sqlSession
+   * @param <T>
+   * @return
+   */
   public <T> T getMapper(Class<T> type, SqlSession sqlSession) {
     return mapperRegistry.getMapper(type, sqlSession);
   }

@@ -31,8 +31,11 @@ import org.apache.ibatis.util.MapUtil;
  */
 public class Plugin implements InvocationHandler {
 
+  // 代理对象类
   private final Object target;
+  // 代理对象配置类,主要配置类为那些对象设置代理类
   private final Interceptor interceptor;
+  // 解析解析interceptor的结果
   private final Map<Class<?>, Set<Method>> signatureMap;
 
   private Plugin(Object target, Interceptor interceptor, Map<Class<?>, Set<Method>> signatureMap) {
@@ -41,14 +44,25 @@ public class Plugin implements InvocationHandler {
     this.signatureMap = signatureMap;
   }
 
+
+  /**
+   * 返回值为代理对象
+   * @param target ParameterHandler
+   * @param interceptor 实现interceptor接口
+   * @return
+   */
   public static Object wrap(Object target, Interceptor interceptor) {
+    // signatureMap 类和该类下代理的方法
     Map<Class<?>, Set<Method>> signatureMap = getSignatureMap(interceptor);
     Class<?> type = target.getClass();
     Class<?>[] interfaces = getAllInterfaces(type, signatureMap);
     if (interfaces.length > 0) {
       return Proxy.newProxyInstance(
+          //类加载器
           type.getClassLoader(),
+          // 接口
           interfaces,
+          // 代理对象,
           new Plugin(target, interceptor, signatureMap));
     }
     return target;
@@ -67,6 +81,11 @@ public class Plugin implements InvocationHandler {
     }
   }
 
+  /**
+   * 解析代理类
+   * @param interceptor
+   * @return
+   */
   private static Map<Class<?>, Set<Method>> getSignatureMap(Interceptor interceptor) {
     Intercepts interceptsAnnotation = interceptor.getClass().getAnnotation(Intercepts.class);
     // issue #251

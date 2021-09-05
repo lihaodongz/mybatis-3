@@ -32,14 +32,14 @@ import java.lang.annotation.Target;
 public @interface Signature {
   /**
    * Returns the java type.
-   *
+   * 代理对象
    * @return the java type
    */
   Class<?> type();
 
   /**
    * Returns the method name.
-   *
+   * 代理方法
    * @return the method name
    */
   String method();
@@ -47,6 +47,7 @@ public @interface Signature {
   /**
    * Returns java types for method argument.
    * @return java types for method argument
+   * 参数
    */
   Class<?>[] args();
 }

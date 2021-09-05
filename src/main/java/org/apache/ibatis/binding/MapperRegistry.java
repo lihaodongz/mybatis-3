@@ -57,6 +57,7 @@ public class MapperRegistry {
     return knownMappers.containsKey(type);
   }
 
+  //  添加一个Mapper给Configuration
   public <T> void addMapper(Class<T> type) {
     if (type.isInterface()) {
       if (hasMapper(type)) {
@@ -64,10 +65,12 @@ public class MapperRegistry {
       }
       boolean loadCompleted = false;
       try {
+        // knownMappers 存放的是class 类和对应的代理对象的工厂类. jdk 代理
         knownMappers.put(type, new MapperProxyFactory<>(type));
         // It's important that the type is added before the parser is run
         // otherwise the binding may automatically be attempted by the
         // mapper parser. If the type is already known, it won't try.
+        // 解析mapper方法上的注解.
         MapperAnnotationBuilder parser = new MapperAnnotationBuilder(config, type);
         parser.parse();
         loadCompleted = true;
