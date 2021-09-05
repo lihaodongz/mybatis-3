@@ -120,6 +120,11 @@ public class MapperMethod {
     return result;
   }
 
+  /**
+   * 构建对象,传递给sqlsession来执行
+   * @param sqlSession
+   * @param args
+   */
   private void executeWithResultHandler(SqlSession sqlSession, Object[] args) {
     MappedStatement ms = sqlSession.getConfiguration().getMappedStatement(command.getName());
     if (!StatementType.CALLABLE.equals(ms.getStatementType())

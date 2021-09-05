@@ -55,6 +55,7 @@ public class Plugin implements InvocationHandler {
     // signatureMap 类和该类下代理的方法
     Map<Class<?>, Set<Method>> signatureMap = getSignatureMap(interceptor);
     Class<?> type = target.getClass();
+    // 拿到类的接口
     Class<?>[] interfaces = getAllInterfaces(type, signatureMap);
     if (interfaces.length > 0) {
       return Proxy.newProxyInstance(
